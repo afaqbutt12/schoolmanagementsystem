@@ -3,26 +3,80 @@ const Teacher = require('../models/teacherSchema.js');
 const Subject = require('../models/subjectSchema.js');
 
 const teacherRegister = async (req, res) => {
-    const { name, email, password, role, school, teachSubject, teachSclass } = req.body;
+    const { 
+        name, 
+        email, 
+        password, 
+        role, 
+        school, 
+        teachSubject, 
+        teachSclass,
+        firstName,
+        lastName,
+        gender,
+        dateOfBirth,
+        idNo,
+        bloodGroup,
+        religion,
+        phone,
+        address,
+        section,
+        shortBio,
+        photo
+    } = req.body;
+    
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt);
 
-        const teacher = new Teacher({ name, email, password: hashedPass, role, school, teachSubject, teachSclass });
-
+        // Check for existing teacher by email
         const existingTeacherByEmail = await Teacher.findOne({ email });
-
         if (existingTeacherByEmail) {
-            res.send({ message: 'Email already exists' });
+            return res.status(400).send({ message: 'Email already exists' });
         }
-        else {
-            let result = await teacher.save();
+
+        // Check for existing teacher by ID No if provided
+        if (idNo) {
+            const existingTeacherById = await Teacher.findOne({ idNo });
+            if (existingTeacherById) {
+                return res.status(400).send({ message: 'ID Number already exists' });
+            }
+        }
+
+        const teacher = new Teacher({ 
+            name, 
+            email, 
+            password: hashedPass, 
+            role, 
+            school: school || req.body.adminID,
+            teachSubject, 
+            teachSclass,
+            firstName,
+            lastName,
+            gender,
+            dateOfBirth,
+            employeeID: idNo,
+            bloodGroup,
+            religion,
+            phone,
+            address,
+            section,
+            shortBio,
+            photo,
+            joiningDate: new Date()
+        });
+
+        let result = await teacher.save();
+        
+        // Update subject with teacher if teachSubject is provided
+        if (teachSubject) {
             await Subject.findByIdAndUpdate(teachSubject, { teacher: teacher._id });
-            result.password = undefined;
-            res.send(result);
         }
+        
+        result.password = undefined;
+        res.status(201).send(result);
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({ message: 'Error creating teacher', error: err.message });
     }
 };
 
@@ -98,6 +152,26 @@ const updateTeacherSubject = async (req, res) => {
         res.send(updatedTeacher);
     } catch (error) {
         res.status(500).json(error);
+    }
+};
+
+const updateTeacher = async (req, res) => {
+    try {
+        const teacher = await Teacher.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        ).populate('teachSubject', 'subName sessions')
+         .populate('school', 'schoolName')
+         .populate('teachSclass', 'sclassName');
+        
+        if (!teacher) {
+            return res.status(404).send({ message: 'Teacher not found' });
+        }
+        
+        res.send(teacher);
+    } catch (err) {
+        res.status(500).json({ message: 'Error updating teacher', error: err.message });
     }
 };
 
@@ -198,6 +272,7 @@ module.exports = {
     getTeachers,
     getTeacherDetail,
     updateTeacherSubject,
+    updateTeacher,
     deleteTeacher,
     deleteTeachers,
     deleteTeachersByClass,

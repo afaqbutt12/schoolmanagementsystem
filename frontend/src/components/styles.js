@@ -53,11 +53,15 @@ export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
             position: 'relative',
             whiteSpace: 'nowrap',
             width: drawerWidth,
+            background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+            border: 'none',
+            boxShadow: '2px 0 8px rgba(0,0,0,0.1)',
             transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
             }),
             boxSizing: 'border-box',
+            overflow: 'hidden',
             ...(!open && {
                 overflowX: 'hidden',
                 transition: theme.transitions.create('width', {

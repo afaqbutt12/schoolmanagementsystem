@@ -39,7 +39,7 @@ const teacherSlice = createSlice({
         postDone: (state) => {
             state.loading = false;
             state.error = null;
-            state.response = null;
+            state.response = 'success';
         }
     },
 });
