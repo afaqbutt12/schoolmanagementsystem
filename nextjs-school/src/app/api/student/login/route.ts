@@ -22,8 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid password' }, { status: 401 });
     }
 
-    const studentResponse = student.toObject();
-    delete studentResponse.password;
+    const { password: _, ...studentResponse } = student.toObject();
     
     return NextResponse.json(studentResponse);
   } catch (error) {

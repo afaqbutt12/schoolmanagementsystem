@@ -27,8 +27,7 @@ export async function POST(request: NextRequest) {
       await Subject.findByIdAndUpdate(body.teachSubject, { teacher: teacher._id });
     }
     
-    const teacherResponse = result.toObject();
-    delete teacherResponse.password;
+    const { password: _, ...teacherResponse } = result.toObject();
     
     return NextResponse.json(teacherResponse, { status: 201 });
   } catch (error) {

@@ -25,8 +25,7 @@ export async function POST(request: NextRequest) {
     
     const result = await student.save();
     
-    const studentResponse = result.toObject();
-    delete studentResponse.password;
+    const { password: _, ...studentResponse } = result.toObject();
     
     return NextResponse.json(studentResponse, { status: 201 });
   } catch (error) {

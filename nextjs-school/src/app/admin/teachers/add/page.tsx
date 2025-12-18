@@ -58,6 +58,12 @@ const AddTeacherPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!currentUser) {
+      setMessage('User not authenticated');
+      return;
+    }
+    
     setLoading(true);
     setMessage('');
 

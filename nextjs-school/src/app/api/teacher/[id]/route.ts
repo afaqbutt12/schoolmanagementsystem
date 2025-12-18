@@ -22,8 +22,7 @@ export async function GET(
       return NextResponse.json({ message: 'No teacher found' }, { status: 404 });
     }
 
-    const teacherResponse = teacher.toObject();
-    delete teacherResponse.password;
+    const { password: _, ...teacherResponse } = teacher.toObject();
     
     return NextResponse.json(teacherResponse);
   } catch (error) {
@@ -51,8 +50,7 @@ export async function PUT(
       return NextResponse.json({ message: 'Teacher not found' }, { status: 404 });
     }
 
-    const teacherResponse = result.toObject();
-    delete teacherResponse.password;
+    const { password: _pwd, ...teacherResponse } = result.toObject();
     
     return NextResponse.json(teacherResponse);
   } catch (error) {

@@ -18,8 +18,7 @@ export async function GET(
     }
 
     const teachersResponse = teachers.map(teacher => {
-      const obj = teacher.toObject();
-      delete obj.password;
+      const { password: _, ...obj } = teacher.toObject();
       return obj;
     });
     

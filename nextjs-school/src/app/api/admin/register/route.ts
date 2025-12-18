@@ -22,8 +22,7 @@ export async function POST(request: NextRequest) {
     const admin = new Admin(body);
     const result = await admin.save();
     
-    const adminResponse = result.toObject();
-    delete adminResponse.password;
+    const { password: _, ...adminResponse } = result.toObject();
     
     return NextResponse.json(adminResponse, { status: 201 });
   } catch (error) {

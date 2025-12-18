@@ -15,8 +15,7 @@ export async function GET(
       return NextResponse.json({ message: 'No admin found' }, { status: 404 });
     }
 
-    const adminResponse = admin.toObject();
-    delete adminResponse.password;
+    const { password, ...adminResponse } = admin.toObject();
     
     return NextResponse.json(adminResponse);
   } catch (error) {
