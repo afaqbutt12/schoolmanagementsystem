@@ -47,8 +47,8 @@ const AddNoticePage = () => {
     try {
       const noticeData = {
         ...formData,
-        adminID: currentUser._id,
-        school: currentUser._id,
+        adminID: currentUser?._id,
+        school: currentUser?._id,
       };
 
       const res = await fetch('/api/notice', {
